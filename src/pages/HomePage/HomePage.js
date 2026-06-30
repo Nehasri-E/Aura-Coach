@@ -40,6 +40,9 @@ export default function HomePage({ onStart, onHistory }) {
     <button className="start-btn" onClick={onStart}>
       ▶ Start Training
       </button>
+    <button className="start-btn" onClick={onHistory} style={{ marginTop: "12px" }}>
+      🗂 Session History
+      </button>
       </div>
     </div>
     </div>

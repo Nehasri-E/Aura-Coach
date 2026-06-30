@@ -38,6 +38,43 @@ There's also a **Session History** page listing all past sessions so you can tra
 
   On the performance model, **posture (54%) and speaking pace (19%) are the biggest drivers** of the score, per its feature importances — eye contact comes next. Full training details, why these are real learned models rather than thresholds, and retraining instructions are in `README_ML.md`.
 
+## Pages
+
+### Home Page
+Landing screen with an animated typing headline ("Face. Train. Succeed.") over a full-bleed background, a user avatar bar top-right, and a single **▶ Start Training** button that drops you into a live session. Minimal by design — no setup steps, no settings to configure first.
+
+`![Home Page](docs/screenshots/home-page.png)`
+
+### Training Page
+The core of the app — a live session screen, split into three columns:
+
+- **Center:** your live camera feed (this is also where MediaPipe Pose draws posture landmarks and face-api.js reads expression).
+- **Left — Body Language Analysis:** Posture Score, Head Tilt, Eye Contact, updating continuously.
+- **Right — Speaking Style Feedback:** Speaking Pace (WPM), Filler Words, Emotion, Tone, Volume, Pitch.
+- **Below the camera — Live Tips:** short real-time nudges generated from your current metrics (e.g. "Speak louder" when volume is low).
+- **Start Session** button at the bottom to begin/end recording.
+
+This is the screen shown in the example below — note all the right-panel stats sit at 0 until the WebSocket to the backend is connected and audio starts streaming.
+
+`![Training Page](docs/screenshots/training-page.png)`
+
+### Report Page
+Shown after you end a session:
+
+- **Session Summary card** — the headline **🧠 ML Performance Score** badge (0–100, from the trained regressor) alongside quick-glance stats: WPM, Posture, Eye Contact, Volume, Emotion.
+- **Pacing & Confidence Trend chart** — a line chart plotting Posture ("Confidence") and WPM ("Pacing") across five checkpoints through the session (Start → 1 min → 2 min → 3 min → End), so you can see whether you faded or held steady.
+- **Insights** — rule-based observations on what happened in the session.
+- **Recommendations** — concrete suggestions for the next attempt.
+
+`![Report Page](docs/screenshots/report-page.png)`
+
+### Session History Page
+A simple list of all past sessions ("Previous Sessions"), letting you click back into any earlier report to compare progress over time — useful for tracking whether posture, fillers, or pace are trending the right direction across multiple practice runs.
+
+`![Session History Page](docs/screenshots/session-history-page.png)`
+
+> **Adding screenshots:** create a `docs/screenshots/` folder in the repo root, drop in PNGs with the filenames referenced above, and the image links throughout this section will render automatically on GitHub.
+
 ## Project structure
 
 ```
