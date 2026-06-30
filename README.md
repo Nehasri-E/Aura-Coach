@@ -43,7 +43,7 @@ There's also a **Session History** page listing all past sessions so you can tra
 ### Home Page
 Landing screen with an animated typing headline ("Face. Train. Succeed.") over a full-bleed background, a user avatar bar top-right, and a single **▶ Start Training** button that drops you into a live session. Minimal by design — no setup steps, no settings to configure first.
 
-`![Home Page](docs/screenshots/home-page.png)`
+![Home Page](docs/screenshots/home-page.png)
 
 ### Training Page
 The core of the app — a live session screen, split into three columns:
@@ -56,7 +56,7 @@ The core of the app — a live session screen, split into three columns:
 
 This is the screen shown in the example below — note all the right-panel stats sit at 0 until the WebSocket to the backend is connected and audio starts streaming.
 
-`![Training Page](docs/screenshots/training-page.png)`
+![Training Page](docs/screenshots/training-page.png)
 
 ### Report Page
 Shown after you end a session:
@@ -66,12 +66,12 @@ Shown after you end a session:
 - **Insights** — rule-based observations on what happened in the session.
 - **Recommendations** — concrete suggestions for the next attempt.
 
-`![Report Page](docs/screenshots/report-page.png)`
+![Report Page](docs/screenshots/report-page.png)
 
 ### Session History Page
 A simple list of all past sessions ("Previous Sessions"), letting you click back into any earlier report to compare progress over time — useful for tracking whether posture, fillers, or pace are trending the right direction across multiple practice runs.
 
-`![Session History Page](docs/screenshots/session-history-page.png)`
+![Session History Page](docs/screenshots/session-history-page.png)
 
 > **Adding screenshots:** create a `docs/screenshots/` folder in the repo root, drop in PNGs with the filenames referenced above, and the image links throughout this section will render automatically on GitHub.
 
