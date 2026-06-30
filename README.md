@@ -1,20 +1,46 @@
 # Aura Coach
 
-Aura Coach is a real-time public-speaking practice tool. It watches you through your webcam and mic while you speak, then gives live feedback on posture, eye contact, pace, filler words, volume, pitch, and vocal tone — plus a post-session report with an ML-generated performance score.
+A real-time public-speaking coach. Turn on your camera and mic, start talking, and Aura Coach watches your body language and listens to your voice — live — then scores the whole session with a trained ML model at the end.
 
-## How it works
+## What the dashboard actually shows
 
-- **Frontend (React)** — captures webcam/mic in the browser, runs body-language tracking with MediaPipe Pose and facial-expression detection with face-api.js, streams audio to the backend over a WebSocket, and renders live tips during the session plus a report afterward.
-- **Backend (FastAPI)** — receives the audio stream, extracts acoustic features (loudness, pitch, spectral centroid, zero-crossing rate via `librosa`), classifies vocal tone, logs session data, and serves a performance report.
-- **ML models (scikit-learn)** — two trained RandomForest models replace the original rule-based thresholds:
-  - A **performance regressor** that scores a session 0–100 from features like WPM, posture, fillers, volume, pitch, eye contact, tone, and emotion.
-  - A **tone classifier** (`Calm` / `Balanced` / `Energetic` / `Noise`) from acoustic features.
+The live training screen is a three-panel layout: your camera feed in the center, with two stat panels on either side that update continuously while you speak.
 
-  See `README_ML.md` for details on how these were trained and how to retrain them.
+**Body Language Analysis** (left panel)
+- **Posture Score** — a 0–100% score from MediaPipe Pose landmark tracking
+- **Head Tilt** — current head angle in degrees
+- **Eye Contact** — Good / Needs Work, from gaze direction relative to the camera
+
+**Speaking Style Feedback** (right panel)
+- **Speaking Pace** — live words-per-minute
+- **Filler Words** — running count of "um," "uh," "like," etc.
+- **Emotion** — facial expression read via face-api.js (e.g. happy, neutral, nervous)
+- **Tone** — vocal tone classified live as Calm / Balanced / Energetic / Noise
+- **Volume** — current loudness (RMS)
+- **Pitch** — current vocal pitch
+
+**Live Tips** (below the camera) — short, real-time nudges generated from your current metrics, e.g. "Speak louder," "Slow down," "Try to look at the camera more."
+
+After you end a session, the **Report page** shows a summary, rule-based insights/recommendations, and an **ML Performance Score (0–100)** from the trained regressor — not just an average of the raw numbers, but a model that's learned how these metrics interact (e.g. fast pace only hurts the score when filler words are also high).
+
+There's also a **Session History** page listing all past sessions so you can track whether posture, pace, fillers, etc. are trending in the right direction over time.
+
+## How it works under the hood
+
+- **Frontend (React)** — captures webcam/mic, runs MediaPipe Pose for body tracking and face-api.js for facial expression, streams audio to the backend over a WebSocket, and renders the live dashboard + report.
+- **Backend (FastAPI)** — receives the audio stream, extracts acoustic features (loudness, pitch, spectral centroid, zero-crossing rate via `librosa`), runs the tone classifier on each chunk in real time, logs session data, and builds the post-session report.
+- **ML models (scikit-learn, RandomForest)** — trained on 78 real recorded sessions, replacing what used to be hand-written if/else thresholds:
+
+  | Model | Task | Test MAE / Accuracy | Test R² / CV |
+  |---|---|---|---|
+  | Performance Regressor | 0–100 session score from wpm, posture, fillers, volume, pitch, eyeContact, tone, emotion | ~1.9 pts | R² ~0.96, 5-fold CV MAE ~3.1 |
+  | Tone Classifier | Calm / Balanced / Energetic / Noise from 5 acoustic features | ~98% accuracy | 5-fold CV ~99.6% |
+
+  On the performance model, **posture (54%) and speaking pace (19%) are the biggest drivers** of the score, per its feature importances — eye contact comes next. Full training details, why these are real learned models rather than thresholds, and retraining instructions are in `README_ML.md`.
 
 ## Project structure
 
-\`\`\`
+```
 aura-coach-fixed/
 ├── backend/
 │   ├── main.py              # FastAPI app: WebSocket audio stream, session/report endpoints
@@ -23,61 +49,63 @@ aura-coach-fixed/
 │   ├── models/              # Trained model artifacts (.joblib + metadata)
 │   └── requirements.txt
 ├── src/
-│   ├── pages/                # HomePage, TrainingPage (live session), ReportPage, SessionHistoryPage
+│   ├── pages/
+│   │   ├── HomePage/           # Landing page
+│   │   ├── TrainingPage/       # Live session: camera, dashboard, live tips
+│   │   ├── ReportPage/         # Post-session summary + ML score
+│   │   └── SessionHistoryPage/ # Past sessions list
 │   └── App.js
 ├── public/models/             # face-api.js model weights (served statically)
-├── data/raw/                  # Saved session JSONs (gitignored — not included in version control)
+├── data/raw/                  # Saved session JSONs (gitignored)
 ├── dockerfile
 └── package.json
-\`\`\`
+```
 
 ## Prerequisites
 
 - Node.js 18+ and npm
-- Python 3.10+ (project was last run on 3.13)
+- Python 3.10+ (last run on 3.13)
 - A webcam and microphone
 
 ## Setup
 
-**1. Clone and configure environment variables**
+**1. Environment variables**
 
-\`\`\`bash
+```bash
 cp .env.example .env
-\`\`\`
-
-The default points the frontend at a local backend (`http://localhost:8010`) — no changes needed for local dev.
+```
+Default points the frontend at `http://localhost:8010` — fine for local dev as-is.
 
 **2. Backend**
 
-\`\`\`bash
+```bash
 cd backend
 python -m venv venv
-source venv/bin/activate      # Windows: .\\venv\\Scripts\\Activate.ps1
+source venv/bin/activate      # Windows: .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-\`\`\`
-
-Trained model files are already included in `backend/models/`. To retrain them yourself (e.g. after collecting more sessions), see `README_ML.md`.
+```
+Trained models are already in `backend/models/`. To retrain (e.g. after collecting more sessions), see `README_ML.md`.
 
 **3. Frontend**
 
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 ## Running locally
 
-Two terminals, both servers running at the same time:
+Two terminals, both running at the same time:
 
-\`\`\`bash
+```bash
 # Terminal 1 — backend
 cd backend
 uvicorn main:app --reload --port 8010
 
 # Terminal 2 — frontend
 npm start
-\`\`\`
+```
 
-Open `http://localhost:3000`. Click **Start Session**, allow camera/mic access, and the live dashboard will populate.
+Open `http://localhost:3000`, click **Start Session**, allow camera/mic access.
 
 ## API overview
 
@@ -85,21 +113,21 @@ Open `http://localhost:3000`. Click **Start Session**, allow camera/mic access, 
 |---|---|---|
 | `/api/audio-stream` | WebSocket | Streams mic audio, returns live tone/volume/pitch predictions |
 | `/api/session/log` | POST | Logs a completed session's data |
-| `/api/report/{session_id}` | GET | Returns the full report for a session, including the ML performance score |
-| `/api/predict/performance` | POST | Scores an arbitrary feature set (useful for testing / what-if checks) |
-| `/api/sessions` | GET | Lists saved sessions |
+| `/api/report/{session_id}` | GET | Full report for a session, including the ML performance score |
+| `/api/predict/performance` | POST | Score an arbitrary feature set (testing / what-if) |
+| `/api/sessions` | GET | List saved sessions |
 | `/api/models/status` | GET | Health check confirming both ML models loaded |
 
 ## Docker
 
-\`\`\`bash
+```bash
 docker build -t aura-coach .
 docker run -p 8080:8080 aura-coach
-\`\`\`
+```
 
-The image build trains both models from `data/raw/`. If that folder has fewer than 10 sessions, the build will fail on the training step — either seed it with sample sessions first, or train locally and commit the `.joblib` files in `backend/models/` instead.
+The build trains both models from `data/raw/`. Fewer than 10 sessions there will fail the build — seed sample sessions first, or train locally and commit the `.joblib` files in `backend/models/` instead.
 
 ## Notes
 
-- `data/raw/` (saved practice sessions) is gitignored by default since it's personal session data — remove that line from `.gitignore` if you want to version it.
-- CORS in `backend/main.py` is currently set up for `localhost:3000` and `*.devtunnels.ms`; update `allow_origins` / `allow_origin_regex` if you deploy elsewhere.
+- `data/raw/` is gitignored by default since it's personal session data.
+- CORS in `backend/main.py` currently allows `localhost:3000` and `*.devtunnels.ms`; update `allow_origins` / `allow_origin_regex` for other deployments.
