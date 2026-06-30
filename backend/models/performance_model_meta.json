@@ -1,0 +1,90 @@
+{
+  "features": [
+    "wpm",
+    "posture",
+    "fillers",
+    "volume",
+    "pitch",
+    "eyeContact",
+    "tone",
+    "emotion"
+  ],
+  "numeric_features": [
+    "wpm",
+    "posture",
+    "fillers",
+    "volume",
+    "pitch"
+  ],
+  "categorical_features": [
+    "eyeContact",
+    "tone",
+    "emotion"
+  ],
+  "n_train_sessions": 78,
+  "test_mae": 1.8900073110585436,
+  "test_r2": 0.9636743233708087,
+  "cv_mae": 3.0659425935353957,
+  "feature_importances": [
+    [
+      "posture",
+      0.5435057600220464
+    ],
+    [
+      "wpm",
+      0.1922574581193584
+    ],
+    [
+      "eyeContact_Good",
+      0.10963811740650939
+    ],
+    [
+      "fillers",
+      0.05026563462804279
+    ],
+    [
+      "emotion_Confident",
+      0.038731771993189744
+    ],
+    [
+      "volume",
+      0.026090925920950057
+    ],
+    [
+      "eyeContact_Looking Away",
+      0.019277887921193698
+    ],
+    [
+      "eyeContact_Unknown",
+      0.009887043357758179
+    ],
+    [
+      "tone_Calm",
+      0.004972216589279429
+    ],
+    [
+      "tone_Neutral",
+      0.0015891673014033158
+    ],
+    [
+      "tone_Noise",
+      0.0015717826438636955
+    ],
+    [
+      "emotion_Neutral",
+      0.0011474903534417756
+    ],
+    [
+      "emotion_Happy",
+      0.0010647437429630075
+    ],
+    [
+      "pitch",
+      0.0
+    ],
+    [
+      "tone_Balanced",
+      0.0
+    ]
+  ]
+}

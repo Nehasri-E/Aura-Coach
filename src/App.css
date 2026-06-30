@@ -1,0 +1,23 @@
+.page-header {
+  width: 100%;
+  text-align: left;
+  padding: 1.5rem 2.5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
+
+.site-name {
+  color: #a57cff;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.large-header .site-name {
+  font-size: 2rem;
+}
+
+.small-header .site-name {
+  font-size: 1.2rem;
+}

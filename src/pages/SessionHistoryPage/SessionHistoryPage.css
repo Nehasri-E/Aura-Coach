@@ -1,0 +1,44 @@
+.history-root {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-container {
+  margin: 80px auto;
+  width: 85%;
+  max-width: 900px;
+  padding: 30px;
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+}
+
+.session-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.session-table th,
+.session-table td {
+  text-align: center;
+  padding: 12px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.session-table th {
+  color: #d8b4fe;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.session-table tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn.small {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+}

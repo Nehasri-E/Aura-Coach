@@ -1,0 +1,42 @@
+{
+  "labels": [
+    "Noise",
+    "Calm",
+    "Balanced",
+    "Energetic"
+  ],
+  "feature_names": [
+    "rms",
+    "pitch_mean",
+    "pitch_std",
+    "spectral_centroid",
+    "zero_crossing_rate"
+  ],
+  "n_train_samples": 384,
+  "test_accuracy": 0.9791666666666666,
+  "cv_accuracy_mean": 0.9958333333333333,
+  "cv_accuracy_std": 0.00510310363079827,
+  "feature_importances": [
+    [
+      "pitch_std",
+      0.26887870793436425
+    ],
+    [
+      "rms",
+      0.26703940547347493
+    ],
+    [
+      "pitch_mean",
+      0.1811203731389822
+    ],
+    [
+      "zero_crossing_rate",
+      0.16445915473088957
+    ],
+    [
+      "spectral_centroid",
+      0.118502358722289
+    ]
+  ],
+  "note": "Trained on synthetic audio matching each tone's acoustic profile (loudness, pitch range, pitch jitter). Swap build_training_set() for real labeled recordings when available."
+}
